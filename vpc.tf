@@ -2,7 +2,7 @@ module "main-vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.6.0"
 
-  name = "terraform-vpc-1"
+  name = "jenkins-vpc"
   cidr = "10.0.0.0/16"
 
   azs = slice(data.aws_availability_zones.available.names, 0, 1)
@@ -12,7 +12,7 @@ module "main-vpc" {
   enable_vpn_gateway = false
 
   tags = {
-    "Name" = "terraform-vpc-1"
+    "Name" = "jenkins-vpc"
     "Project Name" = var.AWS_PROJECT_NAME
   }
 }

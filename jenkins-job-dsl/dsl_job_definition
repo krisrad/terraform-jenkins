@@ -33,7 +33,7 @@ job ("packer-nodeapp-job") {
     }
   }
   steps {
-    shell (readFileFromWorkspace('packer-nodeapp-job-shell.sh'))
+    shell (readFileFromWorkspace('jenkins-job-dsl/packer-nodeapp-job-shell.sh'))
   }
 }
 job ("terraform-nodeapp-create-job") {
@@ -53,7 +53,7 @@ job ("terraform-nodeapp-create-job") {
     }
   }
   steps {
-		shell (readFileFromWorkspace('terraform-nodeapp-create-job-shell.sh'))
+		shell (readFileFromWorkspace('jenkins-job-dsl/terraform-nodeapp-create-job-shell.sh'))
 	}
 }
 job ("terraform-nodeapp-destroy-job") {
@@ -73,6 +73,6 @@ job ("terraform-nodeapp-destroy-job") {
     }
   }
   steps {
-		shell (readFileFromWorkspace('terraform-nodeapp-destroy-job-shell.sh'))
+		shell (readFileFromWorkspace('jenkins-job-dsl/terraform-nodeapp-destroy-job-shell.sh'))
 	}
 }

@@ -1,0 +1,82 @@
+job ("my-first-job") {
+  description ('My First Job')
+  steps {
+    shell ("""
+		echo 'Hello world v1'
+	""")
+  }
+}
+job ("job-with-params") {
+  description ('Job with Parameters')
+  parameters {
+    stringParam('FirstName', defaultValue='Radhakrishnan', description='First Name')
+    stringParam('LastName', defaultValue='Meiappan', description='Last Name')
+  }
+  steps {
+    shell ('echo Hello, "$FirstName" "$LastName" .... Welcome !! ')
+  }
+}
+job ("packer-demo") {
+  description ('This job builds an nodejs app ami containing a node js app and uploades the ami-id to a text file in s3')
+  scm {
+    git {
+      remote {
+        url ('https://github.com/krisrad/packer-demo/')
+      }
+      branch ('master')
+    }
+  }
+  wrappers {
+    credentialsBinding {
+        string('aws_access_keyId', 'AWS_ACCESS_KEY_ID')
+        string('aws_secret_accessKey', 'AWS_SECRET_ACCESS_KEY')
+    }
+  }
+  steps {
+    shell (readFileFromWorkspace('packer-demo-setup.sh'))
+  }
+}
+job ("terraform-packer-demo-setup") {
+  description ('This job picks up the nodejs app ami from a text file in s3 and creates an ec2 instance based on that ami.')
+  scm {
+    git {
+      remote {
+        url ('https://github.com/krisrad/terraform-packer-demo/')
+      }
+      branch ('master')
+    }
+  }
+  wrappers {
+    credentialsBinding {
+        string('aws_access_keyId', 'AWS_ACCESS_KEY_ID')
+        string('aws_secret_accessKey', 'AWS_SECRET_ACCESS_KEY')
+    }
+  }
+  steps {
+	steps {
+		shell (readFileFromWorkspace('terraform-packer-demo-setup.sh'))
+	}
+  }
+}
+job ("terraform-packer-demo-cleanup") {
+  description ('this job deletes the ec2 instance created from the nodejs app ami')
+  scm {
+    git {
+      remote {
+        url ('https://github.com/krisrad/terraform-packer-demo/')
+      }
+      branch ('master')
+    }
+  }
+  wrappers {
+    credentialsBinding {
+        string('aws_access_keyId', 'AWS_ACCESS_KEY_ID')
+        string('aws_secret_accessKey', 'AWS_SECRET_ACCESS_KEY')
+    }
+  }
+  steps {
+	steps {
+		shell (readFileFromWorkspace('terraform-packer-demo-cleanup.sh'))
+	}
+  }
+}
